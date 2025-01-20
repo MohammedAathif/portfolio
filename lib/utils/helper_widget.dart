@@ -1,40 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-Widget commonTextField(
-    {
-      //required TextEditingController controller,
-      void Function(String)? onSubmit,
-      required String hintText,
-      TextInputType? keyboardType,
-      Widget? suffixIcon,
-      int maxLines = 1,
-      bool obscureText = false}) {
-  return  TextField(
-    maxLines: maxLines,
-    decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.grey.shade300,
-        border: InputBorder.none,
+
+Widget commonTextField({
+  required TextEditingController controller,required String hintText,
+  required String? Function(String?) validator
+}) {
+  return  Padding(
+    padding: const EdgeInsets.only(top: 10, bottom: 15),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
         hintText: hintText,
-      hintStyle: const TextStyle(color: Colors.grey),
-      contentPadding: maxLines > 1 ? const EdgeInsets.fromLTRB(10, 20, 0, 0) : null,
+        filled: true,
+        fillColor: Colors.white,
+        border: const OutlineInputBorder(),
+      ),
+      validator: validator,
     ),
   );
-  return TextField(
-    keyboardType: keyboardType,
-    onSubmitted: onSubmit,
-    // controller: controller,
-    obscureText: obscureText,
-    decoration: InputDecoration(
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-      filled: true,
-      //fillColor: AppColors.white,
-      hintText: hintText,
-      suffixIcon: suffixIcon,
-      // hintStyle: GoogleFonts.roboto(
-      //     color: const Color(0xffBCBEC0),
-      //     fontSize: 13,
-      //     fontWeight: FontWeight.w500),
-    ),
-  );
+}
+
+Future<void> openUrl(Uri url) async {
+  try {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url); // Use launchUrl
+    } else {
+      throw 'Could not launch $url';
+    }
+  } catch (e) {
+    print('catched error $e');
+  }
 }
